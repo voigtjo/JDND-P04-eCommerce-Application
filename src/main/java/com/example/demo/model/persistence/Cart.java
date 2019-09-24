@@ -100,7 +100,7 @@ public class Cart {
 		return "Cart{" +
 				"id=" + id +
 				", items.size=" + items.size() +
-				", user.id=" + user.getId() +
+				", user.id=" + (user!=null?user.getId():"") +
 				", total=" + total +
 				'}';
 	}

@@ -51,11 +51,11 @@ public class CartController {
 			IntStream.range(0, request.getQuantity())
 					.forEach(i -> cart.addItem(item.get()));
 			cartRepository.save(cart);
+			log.info("added to cart: " + cart.toString());
 		} catch (Exception e){
 			log.error("ERROR in add to cart: " + request.toString());
 			throw new Exception(e);
 		}
-		log.info("added to cart: " + cart.toString());
 		return ResponseEntity.ok(cart);
 	}
 	
@@ -75,11 +75,11 @@ public class CartController {
 			IntStream.range(0, request.getQuantity())
 					.forEach(i -> cart.removeItem(item.get()));
 			cartRepository.save(cart);
+			log.info("removed from cart: " + cart.toString());
 		} catch (Exception e){
 				log.error("ERROR in remove from cart: " + request.toString());
 				throw new Exception(e);
 		}
-		log.info("removed from cart: " + cart.toString());
 		return ResponseEntity.ok(cart);
 	}
 		
