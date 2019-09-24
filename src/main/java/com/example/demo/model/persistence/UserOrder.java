@@ -81,5 +81,14 @@ public class UserOrder {
 		order.setUser(cart.getUser());
 		return order;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "UserOrder{" +
+				"id=" + id +
+				", items.size=" + items.size() +
+				", user.name=" + user.getUsername() +
+				", total=" + total +
+				'}';
+	}
 }

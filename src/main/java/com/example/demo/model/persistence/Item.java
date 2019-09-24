@@ -34,7 +34,16 @@ public class Item {
 	@Column(nullable = false)
 	@JsonProperty
 	private String description;
-	
+
+	public Item() {
+	}
+
+	public Item(String name, BigDecimal price, String description) {
+		this.name = name;
+		this.price = price;
+		this.description = description;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -91,7 +100,14 @@ public class Item {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
-	
-	
+
+	@Override
+	public String toString() {
+		return "Item{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				", price=" + price +
+				", description='" + description + '\'' +
+				'}';
+	}
 }

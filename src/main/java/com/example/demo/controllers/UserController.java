@@ -24,7 +24,7 @@ import com.example.demo.model.requests.CreateUserRequest;
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
-	Logger log = LoggerFactory.getLogger(UserController.class);
+	private static final Logger log = LoggerFactory.getLogger(UserController.class);
 	
 	@Autowired
 	private UserRepository userRepository;
@@ -47,22 +47,34 @@ public class UserController {
 	}
 	
 	@PostMapping("/create")
-	public ResponseEntity<User> createUser(@RequestBody CreateUserRequest createUserRequest) {
+	public ResponseEntity<User> createUser(@RequestBody CreateUserRequest createUserRequest) throws Exception {
 		User user = new User();
-		user.setUsername(createUserRequest.getUsername());
-		log.info("User name set with ", createUserRequest.getUsername());
-		Cart cart = new Cart();
-		cartRepository.save(cart);
-		user.setCart(cart);
+		try {
+			if(!createUserRequest.getPassword().contentEquals(createUserRequest.getConfirmPassword())){
+				log.warn("ERROR: password and confirmPassword do not match", createUserRequest.getUsername());
+				return ResponseEntity.badRequest().build();
+			}
+			if (createUserRequest.getPassword().length() < 7 ||
+					!createUserRequest.getPassword().equals(createUserRequest.getConfirmPassword())){
+				log.warn("ERROR: password.length must be >= 7", createUserRequest.getUsername());
+				return ResponseEntity.badRequest().build();
+			}
 
-		if (createUserRequest.getPassword().length() < 7 ||
-				!createUserRequest.getPassword().equals(createUserRequest.getConfirmPassword())){
-			log.error("Error with user password. Cannot create user {}", createUserRequest.getUsername());
-			return ResponseEntity.badRequest().build();
+			user.setUsername(createUserRequest.getUsername());
+
+			Cart cart = new Cart();
+			cartRepository.save(cart);
+			user.setCart(cart);
+
+			user.setPassword(bCryptPasswordEncoder.encode(createUserRequest.getPassword()));
+
+			userRepository.save(user);
+		} catch (Exception e){
+			log.error("ERROR in create user: " + createUserRequest.toString());
+			throw new Exception(e);
 		}
-		user.setPassword(bCryptPasswordEncoder.encode(createUserRequest.getPassword()));
 
-		userRepository.save(user);
+		log.info("user created: " + user.toString());
 		return ResponseEntity.ok(user);
 	}
 	

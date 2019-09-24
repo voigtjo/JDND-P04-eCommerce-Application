@@ -94,4 +94,14 @@ public class Cart {
 		}
 		total = total.subtract(item.getPrice());
 	}
+
+	@Override
+	public String toString() {
+		return "Cart{" +
+				"id=" + id +
+				", items.size=" + items.size() +
+				", user.id=" + user.getId() +
+				", total=" + total +
+				'}';
+	}
 }
