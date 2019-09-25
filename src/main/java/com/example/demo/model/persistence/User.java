@@ -74,7 +74,7 @@ public class User {
 				"id=" + id +
 				", username='" + username + '\'' +
 				", password='" + password + '\'' +
-				", cart.id=" + cart.getId() +
+				", cart.id=" + (cart!=null?cart.getId():"") +
 				'}';
 	}
 }

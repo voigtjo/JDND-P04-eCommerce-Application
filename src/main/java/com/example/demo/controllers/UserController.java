@@ -47,32 +47,25 @@ public class UserController {
 	}
 	
 	@PostMapping("/create")
-	public ResponseEntity<User> createUser(@RequestBody CreateUserRequest createUserRequest) throws Exception {
-		User user = new User();
-		try {
-			if(!createUserRequest.getPassword().contentEquals(createUserRequest.getConfirmPassword())){
-				log.warn("ERROR: password and confirmPassword do not match", createUserRequest.getUsername());
-				return ResponseEntity.badRequest().build();
-			}
-			if (createUserRequest.getPassword().length() < 7 ||
-					!createUserRequest.getPassword().equals(createUserRequest.getConfirmPassword())){
-				log.warn("ERROR: password.length must be >= 7", createUserRequest.getUsername());
-				return ResponseEntity.badRequest().build();
-			}
-
-			user.setUsername(createUserRequest.getUsername());
-
-			Cart cart = new Cart();
-			cartRepository.save(cart);
-			user.setCart(cart);
-
-			user.setPassword(bCryptPasswordEncoder.encode(createUserRequest.getPassword()));
-
-			userRepository.save(user);
-		} catch (Exception e){
-			log.error("ERROR in create user: " + createUserRequest.toString());
-			throw new Exception(e);
+	public ResponseEntity<User> createUser(@RequestBody CreateUserRequest createUserRequest) {
+		if(!createUserRequest.getPassword().contentEquals(createUserRequest.getConfirmPassword())){
+			log.error("ERROR: password and confirmPassword do not match", createUserRequest.getUsername());
+			return ResponseEntity.badRequest().build();
 		}
+		if (createUserRequest.getPassword().length() < 7 ||
+				!createUserRequest.getPassword().equals(createUserRequest.getConfirmPassword())){
+			log.error("ERROR: password.length must be >= 7", createUserRequest.getUsername());
+			return ResponseEntity.badRequest().build();
+		}
+		User user = new User();
+		user.setUsername(createUserRequest.getUsername());
+
+		Cart cart = new Cart();
+		cartRepository.save(cart);
+		user.setCart(cart);
+		user.setPassword(bCryptPasswordEncoder.encode(createUserRequest.getPassword()));
+
+		userRepository.save(user);
 
 		log.info("user created: " + user.toString());
 		return ResponseEntity.ok(user);

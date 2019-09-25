@@ -32,19 +32,15 @@ public class OrderController {
 	
 	
 	@PostMapping("/submit/{username}")
-	public ResponseEntity<UserOrder> submit(@PathVariable String username) throws Exception {
-		UserOrder order;
-		try {
-			User user = userRepository.findByUsername(username);
-			if (user == null) {
-				return ResponseEntity.notFound().build();
-			}
-			order = UserOrder.createFromCart(user.getCart());
-			orderRepository.save(order);
-		} catch (Exception e){
-			log.error("ERROR in submit order: username= " + username);
-			throw new Exception(e);
+	public ResponseEntity<UserOrder> submit(@PathVariable String username) {
+
+		User user = userRepository.findByUsername(username);
+		if (user == null) {
+			return ResponseEntity.notFound().build();
 		}
+		UserOrder order = UserOrder.createFromCart(user.getCart());
+		orderRepository.save(order);
+
 		log.info("submitted: " + order.toString());
 		return ResponseEntity.ok(order);
 	}

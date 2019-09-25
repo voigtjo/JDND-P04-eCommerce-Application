@@ -36,50 +36,40 @@ public class CartController {
 	private ItemRepository itemRepository;
 	
 	@PostMapping("/addToCart")
-	public ResponseEntity<Cart> addToCart(@RequestBody ModifyCartRequest request) throws Exception {
-		Cart cart;
-		try {
-			User user = userRepository.findByUsername(request.getUsername());
-			if (user == null) {
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-			}
-			Optional<Item> item = itemRepository.findById(request.getItemId());
-			if (!item.isPresent()) {
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-			}
-			cart = user.getCart();
-			IntStream.range(0, request.getQuantity())
-					.forEach(i -> cart.addItem(item.get()));
-			cartRepository.save(cart);
-			log.info("added to cart: " + cart.toString());
-		} catch (Exception e){
-			log.error("ERROR in add to cart: " + request.toString());
-			throw new Exception(e);
+	public ResponseEntity<Cart> addToCart(@RequestBody ModifyCartRequest request) {
+		User user = userRepository.findByUsername(request.getUsername());
+		if (user == null) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
+		Optional<Item> item = itemRepository.findById(request.getItemId());
+		if (!item.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+		Cart cart = user.getCart();
+		IntStream.range(0, request.getQuantity())
+				.forEach(i -> cart.addItem(item.get()));
+		cartRepository.save(cart);
+		log.info("added to cart: " + cart.toString());
+
 		return ResponseEntity.ok(cart);
 	}
 	
 	@PostMapping("/removeFromCart")
-	public ResponseEntity<Cart> removeFromCart(@RequestBody ModifyCartRequest request) throws Exception {
-		Cart cart;
-		try {
-			User user = userRepository.findByUsername(request.getUsername());
-			if (user == null) {
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-			}
-			Optional<Item> item = itemRepository.findById(request.getItemId());
-			if (!item.isPresent()) {
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-			}
-			cart = user.getCart();
-			IntStream.range(0, request.getQuantity())
-					.forEach(i -> cart.removeItem(item.get()));
-			cartRepository.save(cart);
-			log.info("removed from cart: " + cart.toString());
-		} catch (Exception e){
-				log.error("ERROR in remove from cart: " + request.toString());
-				throw new Exception(e);
+	public ResponseEntity<Cart> removeFromCart(@RequestBody ModifyCartRequest request) {
+		User user = userRepository.findByUsername(request.getUsername());
+		if (user == null) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
+		Optional<Item> item = itemRepository.findById(request.getItemId());
+		if (!item.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+		Cart cart = user.getCart();
+		IntStream.range(0, request.getQuantity())
+				.forEach(i -> cart.removeItem(item.get()));
+		cartRepository.save(cart);
+		log.info("removed from cart: " + cart.toString());
+
 		return ResponseEntity.ok(cart);
 	}
 		
