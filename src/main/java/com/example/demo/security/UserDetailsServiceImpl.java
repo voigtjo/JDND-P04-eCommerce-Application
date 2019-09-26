@@ -9,10 +9,8 @@ import org.springframework.stereotype.Service;
 
 import static java.util.Collections.emptyList;
 
-// based on code from https://dzone.com/articles/implementing-jwt-authentication-on-spring-boot-api
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
-
     private UserRepository userRepository;
 
     public UserDetailsServiceImpl(UserRepository userRepository) {
@@ -21,12 +19,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        com.example.demo.model.persistence.User user = userRepository.findByUsername(username);
-
-        if (user == null) {
+        com.example.demo.model.persistence.User applicationUser = userRepository.findByUsername(username);
+        if (applicationUser == null) {
             throw new UsernameNotFoundException(username);
         }
-
-        return new User(user.getUsername(), user.getPassword(), emptyList());
+        return new User(applicationUser.getUsername(), applicationUser.getPassword(), emptyList());
     }
 }

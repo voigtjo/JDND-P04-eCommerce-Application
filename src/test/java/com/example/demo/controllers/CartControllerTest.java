@@ -121,7 +121,7 @@ public class CartControllerTest {
         request.setQuantity(quantity);
 
         ResponseEntity<Cart> response = cartController.addToCart(request);
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
     @Test
@@ -139,7 +139,7 @@ public class CartControllerTest {
         request.setQuantity(quantity);
 
         ResponseEntity<Cart> response = cartController.addToCart(request);
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
     @Test

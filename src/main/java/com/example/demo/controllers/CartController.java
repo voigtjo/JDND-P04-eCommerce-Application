@@ -3,6 +3,8 @@ package com.example.demo.controllers;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
+import com.example.demo.exceptions.ItemNotPresentException;
+import com.example.demo.exceptions.UserNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,38 +40,54 @@ public class CartController {
 	@PostMapping("/addToCart")
 	public ResponseEntity<Cart> addToCart(@RequestBody ModifyCartRequest request) {
 		User user = userRepository.findByUsername(request.getUsername());
-		if (user == null) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		Cart cart;
+		try {
+			if (user == null) {
+				String message = "|cart_request_failures| user= " + request.getUsername();
+				log.error(message);
+				throw new UserNotFoundException(message);
+			}
+			Optional<Item> item = itemRepository.findById(request.getItemId());
+			if (!item.isPresent()) {
+				String message = "|cart_request_failures| user= " + request.getUsername();
+				log.error(message);
+				throw new ItemNotPresentException(message);
+			}
+			cart = user.getCart();
+			IntStream.range(0, request.getQuantity())
+					.forEach(i -> cart.addItem(item.get()));
+			cartRepository.save(cart);
+			log.info("|cart_request_successes| cart.id=" + cart.getId());
+		} catch(Exception e){
+			return ResponseEntity.badRequest().build();
 		}
-		Optional<Item> item = itemRepository.findById(request.getItemId());
-		if (!item.isPresent()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-		}
-		Cart cart = user.getCart();
-		IntStream.range(0, request.getQuantity())
-				.forEach(i -> cart.addItem(item.get()));
-		cartRepository.save(cart);
-		log.info("added to cart: " + cart.toString());
-
 		return ResponseEntity.ok(cart);
 	}
 	
 	@PostMapping("/removeFromCart")
 	public ResponseEntity<Cart> removeFromCart(@RequestBody ModifyCartRequest request) {
 		User user = userRepository.findByUsername(request.getUsername());
-		if (user == null) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		Cart cart;
+		try {
+			if (user == null) {
+				String message = "|cart_request_failures| user= " + request.getUsername();
+				log.error(message);
+				throw new UserNotFoundException(message);
+			}
+			Optional<Item> item = itemRepository.findById(request.getItemId());
+			if (!item.isPresent()) {
+				String message = "|cart_request_failures| item.id= " + request.getItemId();
+				log.error(message);
+				throw new ItemNotPresentException(message);
+			}
+			cart = user.getCart();
+			IntStream.range(0, request.getQuantity())
+					.forEach(i -> cart.removeItem(item.get()));
+			cartRepository.save(cart);
+			log.info("|cart_request_successes| cart.id= " + cart.getId());
+		} catch(Exception e){
+			return ResponseEntity.badRequest().build();
 		}
-		Optional<Item> item = itemRepository.findById(request.getItemId());
-		if (!item.isPresent()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-		}
-		Cart cart = user.getCart();
-		IntStream.range(0, request.getQuantity())
-				.forEach(i -> cart.removeItem(item.get()));
-		cartRepository.save(cart);
-		log.info("removed from cart: " + cart.toString());
-
 		return ResponseEntity.ok(cart);
 	}
 		

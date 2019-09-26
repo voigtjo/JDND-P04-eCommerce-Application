@@ -9,12 +9,16 @@ C:\Projekte\JDND\GitHub\P04-eCommerce Application\src\main\java\com\example\demo
 C:\Projekte\JDND\GitHub\P04-eCommerce Application\src\main\java\com\example\demo\security\UserDetailsServiceImpl.java
 C:\Projekte\JDND\GitHub\P04-eCommerce Application\src\main\java\com\example\demo\controllers\ItemController.java
 C:\Projekte\JDND\GitHub\P04-eCommerce Application\src\main\java\com\example\demo\model\persistence\repositories\CartRepository.java
+C:\Projekte\JDND\GitHub\P04-eCommerce Application\src\main\java\com\example\demo\exceptions\ItemNotPresentException.java
+C:\Projekte\JDND\GitHub\P04-eCommerce Application\src\main\java\com\example\demo\exceptions\PasswordsDoNotMatchException.java
 C:\Projekte\JDND\GitHub\P04-eCommerce Application\src\main\java\com\example\demo\security\SecurityConstants.java
 C:\Projekte\JDND\GitHub\P04-eCommerce Application\src\main\java\com\example\demo\model\persistence\Cart.java
 C:\Projekte\JDND\GitHub\P04-eCommerce Application\src\main\java\com\example\demo\model\persistence\User.java
 C:\Projekte\JDND\GitHub\P04-eCommerce Application\src\main\java\com\example\demo\model\requests\CreateUserRequest.java
 C:\Projekte\JDND\GitHub\P04-eCommerce Application\src\main\java\com\example\demo\model\requests\ModifyCartRequest.java
 C:\Projekte\JDND\GitHub\P04-eCommerce Application\src\main\java\com\example\demo\security\JWTAuthenticationFilter.java
+C:\Projekte\JDND\GitHub\P04-eCommerce Application\src\main\java\com\example\demo\exceptions\PasswordTooShortException.java
 C:\Projekte\JDND\GitHub\P04-eCommerce Application\src\main\java\com\example\demo\model\persistence\Item.java
+C:\Projekte\JDND\GitHub\P04-eCommerce Application\src\main\java\com\example\demo\exceptions\UserNotFoundException.java
 C:\Projekte\JDND\GitHub\P04-eCommerce Application\src\main\java\com\example\demo\security\JWTAuthorizationFilter.java
 C:\Projekte\JDND\GitHub\P04-eCommerce Application\src\main\java\com\example\demo\model\persistence\repositories\UserRepository.java

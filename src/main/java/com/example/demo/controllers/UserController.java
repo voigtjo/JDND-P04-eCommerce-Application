@@ -1,11 +1,10 @@
 package com.example.demo.controllers;
 
-import java.util.Optional;
-
+import com.example.demo.exceptions.PasswordTooShortException;
+import com.example.demo.exceptions.PasswordsDoNotMatchException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,26 +47,31 @@ public class UserController {
 	
 	@PostMapping("/create")
 	public ResponseEntity<User> createUser(@RequestBody CreateUserRequest createUserRequest) {
-		if(!createUserRequest.getPassword().contentEquals(createUserRequest.getConfirmPassword())){
-			log.error("ERROR: password and confirmPassword do not match", createUserRequest.getUsername());
-			return ResponseEntity.badRequest().build();
-		}
-		if (createUserRequest.getPassword().length() < 7 ||
-				!createUserRequest.getPassword().equals(createUserRequest.getConfirmPassword())){
-			log.error("ERROR: password.length must be >= 7", createUserRequest.getUsername());
-			return ResponseEntity.badRequest().build();
-		}
 		User user = new User();
-		user.setUsername(createUserRequest.getUsername());
+		try {
+			if (!createUserRequest.getPassword().contentEquals(createUserRequest.getConfirmPassword())) {
+				String message = "|CreateUser_request_failure| - password and confirmPassword do not match: user= " + createUserRequest.getUsername();
+				log.error(message);
+				throw new PasswordsDoNotMatchException(message);
+			}
+			if (createUserRequest.getPassword().length() < 7) {
+				String message = "|CreateUser_request_failure| - password.length must be >= 7: user= " + createUserRequest.getUsername();
+				log.error(message);
+				throw new PasswordTooShortException(message);
+			}
 
-		Cart cart = new Cart();
-		cartRepository.save(cart);
-		user.setCart(cart);
-		user.setPassword(bCryptPasswordEncoder.encode(createUserRequest.getPassword()));
+			user.setUsername(createUserRequest.getUsername());
 
-		userRepository.save(user);
+			Cart cart = new Cart();
+			cartRepository.save(cart);
+			user.setCart(cart);
+			user.setPassword(bCryptPasswordEncoder.encode(createUserRequest.getPassword()));
 
-		log.info("user created: " + user.toString());
+			userRepository.save(user);
+			log.info("|CreateUser request successes| user= " + user.getUsername());
+		} catch(Exception e){
+			return ResponseEntity.badRequest().build();
+		}
 		return ResponseEntity.ok(user);
 	}
 	
